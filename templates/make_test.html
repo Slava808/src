@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Создание теста</title>
+  <link rel="stylesheet" href="/static/css/make_test.css">
+</head>
+<body>
+  <div class="container">
+    <h1>СОЗДАТЬ ТЕСТ</h1>
+    <input type="text" id="testName" placeholder="Имя теста" />
+    <div id="questionsContainer"></div>
+    <div class="form-footer">
+      <button onclick="addQuestion()">Добавить вопрос</button>
+      <button style="font-size: 18px; padding: 16px 32px;" onclick="saveTest()">Сохранить тест</button>
+    </div>
+    <div class="alert" id="alertMessage"></div>
+    <pre id="jsonPreview"></pre>
+  </div>
+
+  <script src="/static/js/make_test.js"></script>
+</body>
+</html>

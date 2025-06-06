@@ -7,7 +7,6 @@ from pydantic import BaseModel
 from typing import List
 import os
 import json
-from uuid import uuid4
 
 # Инициализация приложения
 app = FastAPI()
@@ -41,12 +40,16 @@ def index(request: Request):
 # Сохранение теста
 @app.post("/save_test/")
 async def save_test(test: Test):
-    base_filename = f"{test.name}.json"
-    file_path = os.path.join(TESTS_DIR, base_filename)
+    """Сохраняет тест, заменяя старый JSON на новый."""
+    # Удаляем все старые файлы тестов, чтобы оставался только один JSON
+    for fname in os.listdir(TESTS_DIR):
+        if fname.endswith(".json"):
+            try:
+                os.remove(os.path.join(TESTS_DIR, fname))
+            except OSError:
+                pass
 
-    if os.path.exists(file_path):
-        unique_name = f"{test.name}_{uuid4().hex[:8]}.json"
-        file_path = os.path.join(TESTS_DIR, unique_name)
+    file_path = os.path.join(TESTS_DIR, "test.json")
 
     try:
         with open(file_path, "w", encoding="utf-8") as f:
