@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Прохождение теста</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: url('https://i.pinimg.com/736x/59/b4/32/59b43296ae5d04f49ec1027d0b5e02d4.jpg') no-repeat center center fixed;
+      background-size: cover;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 40px 16px;
+    }
+
+    .test-container {
+      max-width: 600px;
+      width: 100%;
+      background: rgba(18, 25, 43, 0.5);
+      backdrop-filter: blur(8px);
+      border-radius: 40px;
+      padding: 32px;
+      box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+      position: relative;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 24px;
+      color: #dbeafe;
+      text-shadow: 0 0 10px rgba(0, 174, 255, 0.3);
+    }
+
+    .question {
+      font-size: 20px;
+      margin-bottom: 16px;
+      font-weight: bold;
+      text-align: center;
+    }
+
+    .answers button {
+      width: 100%;
+      margin-bottom: 12px;
+      padding: 12px;
+      border-radius: 12px;
+      border: none;
+      background: rgba(255, 255, 255, 0.05);
+      color: #fff;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .answers button:hover {
+      background: linear-gradient(to right, #3b82f6, #818cf8);
+    }
+
+    .result {
+      text-align: center;
+      margin-top: 30px;
+      font-size: 18px;
+      color: #facc15;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="test-container">
+    <h2 class="anim">Тестирование</h2>
+    <div id="testContent" class="anim">
+      <div class="question" id="questionText"></div>
+      <div class="answers" id="answersBox"></div>
+    </div>
+    <div class="result" id="resultBox">Спасибо за прохождение!</div>
+  </div>
+
+  <script>
+    let currentQuestion = 0;
+    let testData = [];
+
+    async function loadTest() {
+      const res = await fetch('/tests/test.json');
+      testData = await res.json();
+      showQuestion();
+    }
+
+    function showQuestion() {
+      const container = document.getElementById("testContent");
+      const questionText = document.getElementById("questionText");
+      const answersBox = document.getElementById("answersBox");
+
+      if (currentQuestion >= testData.questions.length) {
+        container.style.display = 'none';
+        document.getElementById("resultBox").style.display = 'block';
+        return;
+      }
+
+      const q = testData.questions[currentQuestion];
+      questionText.textContent = q.question;
+      answersBox.innerHTML = '';
+
+      q.answers.forEach(answer => {
+        const btn = document.createElement("button");
+        btn.textContent = answer;
+        btn.onclick = () => {
+          currentQuestion++;
+          showQuestion();
+        };
+        answersBox.appendChild(btn);
+      });
+
+      gsap.from(".anim", { y: 30, opacity: 0, stagger: 0.1, duration: 0.6 });
+    }
+
+    window.addEventListener("DOMContentLoaded", loadTest);
+  </script>
+</body>
+</html>
